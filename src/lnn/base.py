@@ -39,6 +39,10 @@ class BaseConfig:
 class ConfigurableLightningModule(L.LightningModule):
     CONFIG_CLASS = BaseConfig
 
+    def __init__(self, config: CONFIG_CLASS) -> None:
+        super().__init__()
+        self.save_config(config)
+
     def save_config(self, config: BaseConfig):
         self.config = config
         self.save_hyperparameters(config.to_omega())

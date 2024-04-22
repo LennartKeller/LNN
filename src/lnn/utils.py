@@ -2,19 +2,6 @@ import torch
 from iso639 import languages
 from torch import nn
 
-
-def count_params(model: nn.Module, only_trainable: bool = False) -> int:
-    n_params = 0
-    for param in model.parameters():
-        if torch.is_floating_point(param):
-            if only_trainable:
-                if param.requires_grad:
-                    n_params += param.numel()
-            else:
-                n_params += param.numel()
-    return n_params
-
-
 # map macro lang to its individual lang with the largest population or simply the first child entry on Wikipedia
 _macro_to_individual = {
     "zho": "cmn",
@@ -45,3 +32,24 @@ def normalize_lang_id(lang_id):
     if iso3 in _macro_to_individual:
         return _macro_to_individual[iso3]
     return iso3
+
+
+def gets(d: dict, keys: list[str]) -> list:
+    return [d[k] for k in keys]
+
+
+def count_params(model: nn.Module, only_trainable: bool = False) -> int:
+    n_params = 0
+    for param in model.parameters():
+        if torch.is_floating_point(param):
+            if only_trainable:
+                if param.requires_grad:
+                    n_params += param.numel()
+            else:
+                n_params += param.numel()
+    return n_params
+
+
+def freeze_module(module: nn.Module) -> None:
+    for param in module.parameters():
+        param.requires_grad = False
