@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from copy import deepcopy
+
 import numpy as np
 import torch
 
@@ -25,6 +27,17 @@ class TensorAttrDict(AttrDict):
             if torch.is_tensor(v):
                 self[k] = v.detach()
         return self
+
+    def clone(self) -> TensorAttrDict:
+        cloned_self = TensorAttrDict({})
+        for k, v in self.items():
+            if torch.is_tensor(v):
+                cloned_self[k] = v.clone()
+            elif isinstance(v, np.ndarray):
+                cloned_self[k] = v.copy()
+            else:
+                cloned_self[k] = deepcopy(v)
+        return cloned_self
 
     def numpy(self) -> TensorAttrDict:
         for k, v in self.items():
