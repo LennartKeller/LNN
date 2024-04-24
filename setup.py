@@ -19,5 +19,11 @@ setup(
         "dataclasses-json",
         "numpy",
         "iso-639",
+        "click",
     ],
+    entry_points={
+        "console_scripts": [
+            "sguardian = lnn.slurm:sguardian",
+        ],
+    },
 )
