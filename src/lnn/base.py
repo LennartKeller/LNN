@@ -6,7 +6,7 @@ from typing import Any
 
 import lightning as L
 import torch
-from dataclasses_json import dataclass_json
+from dataclasses_json import DataClassJsonMixin
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
 from trident import TridentModule
@@ -15,8 +15,7 @@ from .attr_dict import AttrDict
 
 
 @dataclass
-@dataclass_json
-class BaseConfig:
+class BaseConfig(DataClassJsonMixin):
 
     def to_attr_dict(self) -> AttrDict[str, Any]:
         return asdict(self, dict_factory=AttrDict)
