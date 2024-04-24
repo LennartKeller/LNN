@@ -18,9 +18,6 @@ from .attr_dict import AttrDict
 @dataclass_json
 class BaseConfig:
 
-    def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
-
     def to_attr_dict(self) -> AttrDict[str, Any]:
         return asdict(self, dict_factory=AttrDict)
 
