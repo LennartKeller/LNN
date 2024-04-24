@@ -1,4 +1,5 @@
 import torch
+from datasets import Dataset, DatasetDict, concatenate_datasets
 from iso639 import languages
 from torch import nn
 
@@ -53,3 +54,12 @@ def count_params(model: nn.Module, only_trainable: bool = False) -> int:
 def freeze_module(module: nn.Module) -> None:
     for param in module.parameters():
         param.requires_grad = False
+
+
+def flatten_dataset_dict(ds_dict: DatasetDict, key_col_name: str = "split") -> Dataset:
+    datasets = []
+    for key, dataset in ds_dict.items():
+        key_column = [key] * len(dataset)
+        dataset = dataset.add_column(key_col_name, key_column)
+        datasets.append(dataset)
+    return concatenate_datasets(datasets)
