@@ -20,6 +20,7 @@ setup(
         "numpy",
         "iso-639",
         "click",
+        "datasets",
     ],
     entry_points={
         "console_scripts": [

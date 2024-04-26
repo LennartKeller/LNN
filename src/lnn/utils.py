@@ -1,5 +1,5 @@
 import torch
-from datasets import Dataset, DatasetDict, concatenate_datasets
+from datasets import Dataset, DatasetDict, concatenate_datasets, load_from_disk
 from iso639 import languages
 from torch import nn
 
@@ -63,3 +63,8 @@ def flatten_dataset_dict(ds_dict: DatasetDict, key_col_name: str = "split") -> D
         dataset = dataset.add_column(key_col_name, key_column)
         datasets.append(dataset)
     return concatenate_datasets(datasets)
+
+
+def load_dataset_split_from_disk(dataset_path: str | Path, split: str):
+    dataset = load_from_disk(dataset_path)[split]
+    return dataset
