@@ -70,3 +70,7 @@ def flatten_dataset_dict(ds_dict: DatasetDict, key_col_name: str = "split") -> D
 def load_dataset_split_from_disk(dataset_path: str | Path, split: str):
     dataset = load_from_disk(dataset_path)[split]
     return dataset
+
+
+def check_chars(string: str) -> list[tuple[str, int, str]]:
+    return [(c, ord(c), hex(ord(c))) for c in string]
