@@ -74,3 +74,12 @@ def load_dataset_split_from_disk(dataset_path: str | Path, split: str):
 
 def check_chars(string: str) -> list[tuple[str, int, str]]:
     return [(c, ord(c), hex(ord(c))) for c in string]
+
+
+def dataset_dict_to_tsv(dataset: DatasetDict, save_dir: str | Path) -> None:
+    save_dir = Path(save_dir)
+    save_dir.mkdir(exist_ok=True, parents=True)
+    for split, ds in dataset.items():
+        path = save_dir / f"{split}.tsv"
+        df = ds.to_pandas()
+        df.to_csv(path, sep="\t", index=False)
