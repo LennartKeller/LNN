@@ -6,7 +6,7 @@ setup(
     author="Lennart Keller",
     author_email="lennartkeller@gmail.com",
     version="0.1.0",
-    python_requires=">3.10",
+    python_requires=">3.9",
     package_dir={"": "src"},
     # packages=find_packages("src")
     include_package_data=True,

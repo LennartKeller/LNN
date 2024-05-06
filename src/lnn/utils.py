@@ -83,3 +83,7 @@ def dataset_dict_to_tsv(dataset: DatasetDict, save_dir: str | Path) -> None:
         path = save_dir / f"{split}.tsv"
         df = ds.to_pandas()
         df.to_csv(path, sep="\t", index=False)
+
+
+def rename_keys(d: dict, rename_map: dict) -> dict:
+    return {rename_map.get(k, k): v for k, v in d.items()}
