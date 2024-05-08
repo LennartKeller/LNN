@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import numpy as np
 import torch
 from datasets import Dataset, DatasetDict, concatenate_datasets, load_from_disk
 from iso639 import languages
@@ -87,3 +88,50 @@ def dataset_dict_to_tsv(dataset: DatasetDict, save_dir: str | Path) -> None:
 
 def rename_keys(d: dict, rename_map: dict) -> dict:
     return {rename_map.get(k, k): v for k, v in d.items()}
+
+
+def conv1d_output_length(
+    input_length: int,
+    kernel_size: int,
+    stride: int = 1,
+    padding: int = 0,
+    dilation: int = 1,
+) -> int:
+    output_length = (
+        input_length + 2 * padding - dilation * (kernel_size - 1)
+    ) // stride + 1
+    return output_length
+
+
+def get_conv1d_mod_output_length(conv1d: nn.Conv1d, input_length: int) -> int:
+    def maybe_extract(x: tuple | int) -> int:
+        if isinstance(x, tuple):
+            return x[0]
+        return x
+
+    kwargs = {
+        k: maybe_extract(conv1d.__dict__[k])
+        for k in ("kernel_size", "stride", "padding", "dilation")
+    }
+    kwargs["input_length"] = input_length
+    return conv1d_output_length(**kwargs)
+
+
+def pad_waveform(
+    waveform: np.array, length: int = 30, sampling_rate: int = 16_000
+) -> np.array:
+    """
+    Pads an audio signal with silence.
+    Args:
+        waveform (np.array): Audio signal
+        length (int): Length of padded signal in seconds
+        sampling_rate (int): Sampling rate of provided signal
+    """
+    n_samples = waveform.shape[-1]
+    padding_length = (length * sampling_rate) - n_samples
+    if padding_length < 0:
+        raise ValueError(f"Provided signal is longer than desired length.")
+    padding_shape = waveform.shape[:-1] + (padding_length,)
+    padding_values = np.zeros(shape=padding_shape, dtype=waveform.dtype)
+    padded_waveform = np.concatenate((waveform, padding_values), axis=-1)
+    return padded_waveform
