@@ -21,6 +21,8 @@ setup(
         "iso-639",
         "click",
         "datasets",
+        "panphon @ git+https://github.com/dmort27/panphon.git",
+        "ipapy",
     ],
     entry_points={
         "console_scripts": [
