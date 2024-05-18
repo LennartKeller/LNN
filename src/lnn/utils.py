@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import numpy as np
@@ -84,6 +85,19 @@ def dataset_dict_to_tsv(dataset: DatasetDict, save_dir: str | Path) -> None:
         path = save_dir / f"{split}.tsv"
         df = ds.to_pandas()
         df.to_csv(path, sep="\t", index=False)
+
+
+def ds_to_ndjson(dataset: Dataset, file_path: str | Path) -> None:
+    file_path = Path(file_path)
+    file_path.write_text("\n".join(json.dumps(line) for line in dataset))
+
+
+def dataset_dict_to_ndjson(dataset: DatasetDict, save_dir: str | Path) -> None:
+    save_dir = Path(save_dir)
+    save_dir.mkdir(exist_ok=True, parents=True)
+    for split, ds in dataset.items():
+        split_file = save_dir / f"{split}.ndjson"
+        ds_to_ndjson(ds, split_file)
 
 
 def rename_keys(d: dict, rename_map: dict) -> dict:
