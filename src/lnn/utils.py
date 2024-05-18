@@ -40,7 +40,7 @@ def normalize_lang_id(lang_id):
 
 
 def get_lang_code(language: str) -> str:
-    language = iso639.languages.get(name=language)
+    language = languages.get(name=language)
     if language is not None:
         return language.part3
     return None
