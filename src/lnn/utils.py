@@ -39,6 +39,13 @@ def normalize_lang_id(lang_id):
     return iso3
 
 
+def get_lang_code(language: str) -> str:
+    language = iso639.languages.get(name=language)
+    if language is not None:
+        return language.part3
+    return None
+
+
 def gets(d: dict, keys: list[str]) -> list:
     return [d[k] for k in keys]
 
