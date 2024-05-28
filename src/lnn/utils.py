@@ -1,9 +1,17 @@
 import json
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
+import pandas as pd
 import torch
-from datasets import Dataset, DatasetDict, concatenate_datasets, load_from_disk
+from datasets import (
+    Dataset,
+    DatasetDict,
+    concatenate_datasets,
+    load_dataset,
+    load_from_disk,
+)
 from iso639 import languages
 from torch import nn
 
@@ -94,6 +102,25 @@ def dataset_dict_to_tsv(dataset: DatasetDict, save_dir: str | Path) -> None:
         df.to_csv(path, sep="\t", index=False)
 
 
+def load_tsv_dataset(
+    root_dir: str | Path, split: Optional[str] = None
+) -> Dataset | DatasetDict:
+    root_dir = Path(root_dir)
+    if split is None:
+        split_files = list(root_dir.glob("*.tsv"))
+    else:
+        split_files = [root_dir / f"{split}.tsv"]
+    dataset = DatasetDict(
+        {
+            split_file.stem: Dataset.from_pandas(pd.read_table(split_file))
+            for split_file in split_files
+        }
+    )
+    if split is not None:
+        dataset = dataset[split]
+    return dataset
+
+
 def ds_to_ndjson(dataset: Dataset, file_path: str | Path) -> None:
     file_path = Path(file_path)
     file_path.write_text("\n".join(json.dumps(line) for line in dataset))
@@ -105,6 +132,18 @@ def dataset_dict_to_ndjson(dataset: DatasetDict, save_dir: str | Path) -> None:
     for split, ds in dataset.items():
         split_file = save_dir / f"{split}.ndjson"
         ds_to_ndjson(ds, split_file)
+
+
+def load_ndjson_dataset(
+    root_dir: str | Path, split: Optional[str] = None, suffix: str = ".ndjson"
+) -> Dataset | DatasetDict:
+    root_dir = Path(root_dir)
+    if split is None:
+        split_files = {f.stem: str(f.absolute()) for f in root_dir.glob(f"*{suffix}")}
+    else:
+        split_files = {split: str((root_dir / f"{split}{suffix}").absolute())}
+    dataset = load_dataset("json", data_files=split_files, split=split)
+    return dataset
 
 
 def rename_keys(d: dict, rename_map: dict) -> dict:
