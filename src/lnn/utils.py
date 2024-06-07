@@ -62,7 +62,7 @@ def gets(d: dict, *keys: list) -> list:
     return [d[k] for k in keys]
 
 
-def rename_keys(d: dict, **rename_map: dict) -> dict:
+def rename_keys(d: dict, rename_map: dict) -> dict:
     return {rename_map.get(k, k): v for k, v in d.items()}
 
 
