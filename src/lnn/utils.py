@@ -54,7 +54,11 @@ def get_lang_code(language: str) -> str:
     return None
 
 
-def gets(d: dict, *keys: list[str]) -> list:
+def extracts(d: dict, *keys: list) -> dict:
+    return {k: d[k] for k in keys}
+
+
+def gets(d: dict, *keys: list) -> list:
     return [d[k] for k in keys]
 
 
