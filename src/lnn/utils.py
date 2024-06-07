@@ -54,8 +54,12 @@ def get_lang_code(language: str) -> str:
     return None
 
 
-def gets(d: dict, keys: list[str]) -> list:
+def gets(d: dict, *keys: list[str]) -> list:
     return [d[k] for k in keys]
+
+
+def rename_keys(d: dict, **rename_map: dict) -> dict:
+    return {rename_map.get(k, k): v for k, v in d.items()}
 
 
 def count_params(model: nn.Module, only_trainable: bool = False) -> int:
