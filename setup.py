@@ -11,7 +11,7 @@ setup(
     # packages=find_packages("src")
     include_package_data=True,
     install_requires=[
-        "trident-core @ git+https://github.com/fdschmidt93/trident.git",
+        # "trident-core @ git+https://github.com/fdschmidt93/trident.git",
         "hydra-core >= 1.3.0",
         "lightning",
         "torch",

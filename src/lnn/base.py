@@ -9,9 +9,10 @@ import torch
 from dataclasses_json import DataClassJsonMixin
 from omegaconf import OmegaConf
 from omegaconf.dictconfig import DictConfig
-from trident import TridentModule
 
 from .attr_dict import AttrDict
+
+# from trident import TridentModule
 
 
 @dataclass
@@ -71,4 +72,4 @@ class ConfigurableLightningModule(L.LightningModule):
         return next(self.parameters()).device
 
 
-class ConfigurableTridentModule(ConfigurableLightningModule, TridentModule): ...
+# class ConfigurableTridentModule(ConfigurableLightningModule, TridentModule): ...
