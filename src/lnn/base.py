@@ -35,6 +35,9 @@ class BaseConfig(DataClassJsonMixin):
         data = {k: v for k, v in conf.items() if k in field_names}
         return cls.from_dict(data)
 
+    def get(self, field: str) -> Any:
+        return getattr(self, field)
+
 
 class ConfigurableLightningModule(L.LightningModule):
     CONFIG_CLASS = BaseConfig
