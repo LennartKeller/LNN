@@ -35,8 +35,10 @@ class BaseConfig(DataClassJsonMixin):
         data = {k: v for k, v in conf.items() if k in field_names}
         return cls.from_dict(data)
 
-    def get(self, field: str) -> Any:
-        return getattr(self, field)
+    def get(self, field: str, default: Any = None) -> Any:
+        if hasattr(self, field)
+            return getattr(self, field)
+        return None
 
 
 class ConfigurableLightningModule(L.LightningModule):
