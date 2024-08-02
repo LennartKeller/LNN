@@ -5,6 +5,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 import torch
+import torchaudio
 from datasets import (
     Dataset,
     DatasetDict,
@@ -203,3 +204,12 @@ def pad_waveform(
     padding_values = np.zeros(shape=padding_shape, dtype=waveform.dtype)
     padded_waveform = np.concatenate((waveform, padding_values), axis=-1)
     return padded_waveform
+
+
+def load_audio(path: str | Path, rate: int = 16_000, mono: bool = True):
+    wv, orig_rate = torchaudio.load(path)
+    if mono and wv.size(0) == 2:
+        wv = wv.mean(axis=0).reshape(1, -1)
+    if rate != orig_rate:
+        wv = torchaudio.functional.resample(wv, orig_freq=orig_rate, new_freq=rate)
+    return wv, rate
