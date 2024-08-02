@@ -2,7 +2,7 @@ import json
 from pathlib import Path as _OrigPath
 
 
-class Path(_OrigPath):
+class Path(type(_OrigPath())):
     def read_json(self, *args, **kwargs) -> dict | list:
         """Read a JSON file and returns its Python-representation.
 
