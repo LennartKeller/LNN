@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 import numpy as np
 import pandas as pd
@@ -206,10 +206,19 @@ def pad_waveform(
     return padded_waveform
 
 
-def load_audio(path: str | Path, rate: int = 16_000, mono: bool = True):
+def load_audio(
+    path: str | Path,
+    rate: int = 16_000,
+    mono: bool = True,
+    return_tensor: str = Literal["pt", "np", "py"],
+) -> tuple[torch.Tensor | np.ndarray | list, int]:
     wv, orig_rate = torchaudio.load(path)
     if mono and wv.size(0) == 2:
         wv = wv.mean(axis=0).reshape(1, -1)
     if rate != orig_rate:
         wv = torchaudio.functional.resample(wv, orig_freq=orig_rate, new_freq=rate)
+    if return_tensor == "np":
+        wv = wv.numpy()
+    elif return_tensor == "py":
+        wv = wv.tolist()
     return wv, rate
