@@ -208,7 +208,7 @@ def pad_waveform(
 
 def load_audio(
     path: str | Path,
-    rate: Optional[int] = 16_000,
+    rate: Optional[int] = None,
     mono: bool = True,
     return_tensor: str = Literal["pt", "np", "py"],
 ) -> tuple[torch.Tensor | np.ndarray | list, int]:
