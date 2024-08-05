@@ -37,7 +37,7 @@ class BaseConfig(DataClassJsonMixin):
 
     def get(self, field: str, default: Any = None) -> Any:
         if hasattr(self, field):
-            return getattr(self, field)
+            return getattr(self, field, default)
         return None
 
 
