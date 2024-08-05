@@ -50,7 +50,7 @@ class ConfigurableLightningModule(L.LightningModule):
 
     def save_config(self, config: BaseConfig):
         self.config = config
-        self.save_hyperparameters(config.to_omega())
+        self.save_hyperparameters(config.to_dict())
 
     def save_pretrained(self, path: str | Path) -> None:
         path = Path(path).expanduser().absolute()
