@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -199,7 +200,7 @@ def pad_waveform(
     n_samples = waveform.shape[-1]
     padding_length = (length * sampling_rate) - n_samples
     if padding_length < 0:
-        raise ValueError(f"Provided signal is longer than desired length.")
+        raise ValueError("Provided signal is longer than desired length.")
     padding_shape = waveform.shape[:-1] + (padding_length,)
     padding_values = np.zeros(shape=padding_shape, dtype=waveform.dtype)
     padded_waveform = np.concatenate((waveform, padding_values), axis=-1)
@@ -224,3 +225,35 @@ def load_audio(
     elif return_tensor == "py":
         wv = wv.tolist()
     return wv, rate
+
+
+def dataframe_apply_parallel(
+    df: pd.DataFrame,
+    apply_column: str,
+    func: callable,
+    result_column: str,
+    num_proc: int = os.cpu_count(),
+    batched: bool = True,
+    batch_size: int = 1000,
+    func_is_batched: bool = False,
+):
+    ds = Dataset.from_pandas(df)
+    if func_is_batched:
+
+        def map_fn(examples):
+            targets = examples[apply_column]
+            results = func(targets)
+            examples[result_column] = results
+            return examples
+
+    else:
+
+        def map_fn(examples):
+            targets = examples[apply_column]
+            results = [func(entry) for entry in targets]
+            examples[result_column] = results
+            return examples
+
+    ds = ds.map(map_fn, num_proc=num_proc, batched=batched, batch_size=batch_size)
+    df = ds.to_pandas()
+    return df
