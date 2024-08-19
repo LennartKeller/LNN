@@ -227,7 +227,7 @@ def load_audio(
     return wv, rate
 
 
-def dataframe_apply_parallel(
+def dataframe_map(
     df: pd.DataFrame,
     apply_column: str,
     func: callable,
