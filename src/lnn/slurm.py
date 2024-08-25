@@ -230,7 +230,7 @@ def sbatch_submit(script_dir, script_pattern, regex, dry_run, verbose, no_dump):
         click.echo("Dry run: Would submit the following scripts")
         click.echo("\n".join([path_to_string(s) for s in scripts]))
     else:
-        submit_succeses, submit_failures = 0, 0
+        submit_successes, submit_failures = 0, 0
         failed_scripts = []
         for script in scripts:
             script_path = path_to_string(script)
@@ -239,12 +239,12 @@ def sbatch_submit(script_dir, script_pattern, regex, dry_run, verbose, no_dump):
                     click.echo(f"Submitting: {script_path}")
                 try:
                     subprocess.run(["sbatch", script_path], check=True)
-                    submit_succeses += 1
+                    submit_successes += 1
                 except subprocess.CalledProcessError:
                     submit_failures += 1
                     failed_scripts.apend(script_path)
         if verbose:
-            click.echo(f"Succesfully submitted {submit_succeses} scripts.")
+            click.echo(f"Successfully submitted {submit_successes} scripts.")
         if submit_failures:
             click.echo(f"Failed to submit {submit_failures} scripts.")
             if not no_dump:
