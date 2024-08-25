@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shlex
 import subprocess
 import time
@@ -72,6 +73,14 @@ def get_jobs() -> dict[str, str | int]:
             }
         )
     return jobs
+
+
+def get_current_timestamp():
+    return datetime.now().strftime("%Y:%m:%d-%H:%M:%S")
+
+
+def path_to_string(p: Path) -> str:
+    return str(p.resolve())
 
 
 def sbatch(
@@ -182,3 +191,67 @@ def sguardian(watch_config, every):
     """
     watch_config = json.loads(Path(watch_config).read_text())
     slurm_guardian(watch_config=watch_config, every=every)
+
+
+@click.command()
+@click.argument(
+    "script-dir", default=".", type=click.Path(file_okay=False, exists=True)
+)
+@click.argument("script-pattern", default="*", type=str)
+@click.option("-r", "--regex", is_flag=True, help="Use regex as script-pattern")
+@click.option("-d", "--dry-run", is_flag=True, help="Run without submitting")
+@click.option("-v", "--verbose", is_flag=True, help="Print out helpful messages")
+@click.option(
+    "-d",
+    "--no-dump",
+    is_flag=True,
+    help="Disable dumping filenames of scripts that failed to submit",
+)
+def sbatch_submit(script_dir, script_pattern, regex, dry_run, verbose, no_dump):
+    script_dir = Path(script_dir)
+    if verbose:
+        click.echo(
+            f"Searching for slurm-scripts with pattern {script_pattern} in {script_dir.resolve()}"
+        )
+    if not regex:
+        if verbose:
+            click.echo("Searching for scripts using glob mode")
+        scripts = list(script_dir.glob(script_pattern))
+    else:
+        if verbose:
+            click.echo("Searching for scripts using regex mode")
+        scripts = list(script_dir.glob("*"))
+        scripts = [
+            s for s in scripts if re.match(rf"{script_pattern}", path_to_string(s))
+        ]
+    if verbose or dry_run:
+        click.echo(f"Found {len(scripts)}")
+    if dry_run:
+        click.echo("Dry run: Would submit the following scripts")
+        click.echo("\n".join([path_to_string(s) for s in scripts]))
+    else:
+        submit_succeses, submit_failures = 0, 0
+        failed_scripts = []
+        for script in scripts:
+            script_path = path_to_string(script)
+            if not dry_run:
+                if verbose:
+                    click.echo(f"Submitting: {script_path}")
+                try:
+                    subprocess.run(["sbatch", script_path], check=True)
+                    submit_succeses += 1
+                except subprocess.CalledProcessError:
+                    submit_failures += 1
+                    failed_scripts.apend(script_path)
+        if verbose:
+            click.echo(f"Succesfully submitted {submit_succeses} scripts.")
+        if submit_failures:
+            click.echo(f"Failed to submit {submit_failures} scripts.")
+            if not no_dump:
+                log_filename = (
+                    Path().cwd() / f"sbatch-submit-log-{get_current_timestamp()}"
+                )
+                log_filename.write_text("\n".join(failed_scripts))
+                click.echo(
+                    f"Wrote a detailed list of filesnames to {script_path(log_filename)}"
+                )

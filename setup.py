@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 setup(
     name="LNN",
@@ -27,6 +27,7 @@ setup(
     entry_points={
         "console_scripts": [
             "sguardian = lnn.slurm:sguardian",
+            "sbatch-submit = lnn.slurm:sbatch_submit",
         ],
     },
 )
