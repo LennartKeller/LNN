@@ -253,5 +253,5 @@ def sbatch_submit(script_dir, script_pattern, regex, dry_run, verbose, no_dump):
                 )
                 log_filename.write_text("\n".join(failed_scripts))
                 click.echo(
-                    f"Wrote a detailed list of filesnames to {script_path(log_filename)}"
+                    f"Wrote a detailed list of filenames to {script_path(log_filename)}"
                 )
