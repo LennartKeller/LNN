@@ -242,7 +242,7 @@ def sbatch_submit(script_dir, script_pattern, regex, dry_run, verbose, no_dump):
                     submit_successes += 1
                 except subprocess.CalledProcessError:
                     submit_failures += 1
-                    failed_scripts.apend(script_path)
+                    failed_scripts.append(script_path)
         if verbose:
             click.echo(f"Successfully submitted {submit_successes} scripts.")
         if submit_failures:
