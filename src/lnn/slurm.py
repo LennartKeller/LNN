@@ -202,7 +202,7 @@ def sguardian(watch_config, every):
 @click.option("-d", "--dry-run", is_flag=True, help="Run without submitting")
 @click.option("-v", "--verbose", is_flag=True, help="Print out helpful messages")
 @click.option(
-    "-d",
+    "-n",
     "--no-dump",
     is_flag=True,
     help="Disable dumping filenames of scripts that failed to submit",
