@@ -4,6 +4,7 @@ from .attr_dict import AttrDict, TensorAttrDict
 from .base import BaseConfig, ConfigurableLightningModule
 from .pathlib import Path
 from .utils import (
+    aggregate_dfs,
     conv1d_output_length,
     count_params,
     dataframe_map,

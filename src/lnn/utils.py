@@ -257,3 +257,14 @@ def dataframe_map(
     ds = ds.map(map_fn, num_proc=num_proc, batched=batched, batch_size=batch_size)
     df = ds.to_pandas()
     return df
+
+
+def aggregate_dfs(dfs: list[pd.DataFrame], op: str = "mean") -> pd.DataFrame:
+    df = dfs[0]
+    columns = df.columns
+    index = df.index
+    data = np.stack([df.to_numpy() for df in dfs])
+    op_fn = getattr(np, op)
+    data_aggregated = op_fn(data, axis=0)
+    averaged_df = pd.DataFrame(index=index, columns=columns, data=data_aggregated)
+    return averaged_df
