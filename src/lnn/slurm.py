@@ -220,7 +220,6 @@ def sbatch_submit(script_dir, script_pattern, regex, dry_run, verbose, no_dump):
     else:
         if verbose:
             click.echo("Searching for scripts using regex mode")
-        scripts = list(script_dir.glob("*"))
         scripts = [
             s for s in scripts if re.match(rf"{script_pattern}", path_to_string(s))
         ]
