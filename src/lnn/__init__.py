@@ -3,6 +3,7 @@ from lnn.notebook import display_audio
 from .attr_dict import AttrDict, TensorAttrDict
 from .base import BaseConfig, ConfigurableLightningModule
 from .pathlib import Path
+from .slurm import scancel, squeue
 from .utils import (
     aggregate_dfs,
     conv1d_output_length,
