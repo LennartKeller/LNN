@@ -6,9 +6,23 @@ import subprocess
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional
 
 import click
+import pandas as pd
+
+
+def squeue(additional_args: Optional[list[str]] = None) -> pd.DataFrame:
+    args = ["squeue", '--format="%i %P %j %u %T %M %l %D %R"']
+    if additional_args is not None:
+        args = args + additional_args
+    squeue_out = subprocess.run(args, capture_output=True).stdout.decode("utf-8")
+    squeue_out = squeue_out.replace('"', "")
+    data = [l.strip().split() for l in squeue_out.split("\n") if l.strip()]
+    header, jobs = data[0], data[1:]
+    df = pd.DataFrame(data=jobs, columns=header)
+    return df
+
 
 SBATCH_DEFAULT_ARGS = [
     "--partion=single",
