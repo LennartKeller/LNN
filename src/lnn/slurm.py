@@ -24,6 +24,13 @@ def squeue(additional_args: Optional[list[str]] = None) -> pd.DataFrame:
     return df
 
 
+def scancel(job_ids: int | list[int]) -> None:
+    if isinstance(job_ids, int):
+        job_ids = [job_ids]
+    for job_id in job_ids:
+        subprocess.run(["scancel", str(job_id)])
+
+
 SBATCH_DEFAULT_ARGS = [
     "--partion=single",
     "--time=06:00:00",
