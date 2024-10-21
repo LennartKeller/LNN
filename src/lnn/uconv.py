@@ -2,7 +2,11 @@ import subprocess
 
 
 def uconv_convert(
-    text, from_code="UTF-8", to_code="UTF-8", transliterate=None, normalize=None
+    text,
+    from_code="UTF-8",
+    to_code="UTF-8",
+    transliterate: str = "Any-Latin",
+    normalize: str = None,
 ):
     """
     Convert text encoding and apply Unicode transformations using uconv.
