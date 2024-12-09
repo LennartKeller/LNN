@@ -28,6 +28,7 @@ setup(
         "console_scripts": [
             "sguardian = lnn.slurm:sguardian",
             "sbatch-submit = lnn.slurm:sbatch_submit",
+            "mc = lnn.codebase:cli_main",
         ],
     },
 )
