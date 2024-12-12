@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import click
 
 
@@ -14,7 +15,7 @@ def merge_codebase(
         path = path.resolve()
         if path.is_file() and path.suffix[1:] in include_suffixes:
             name = path.relative_to(cwd)
-            code += f"### File: {name}\n ##" + path.read_text() + "\n\n"
+            code += f"# Merged-Codebase | File: {name}\n" + path.read_text() + "\n\n"
     return code
 
 
